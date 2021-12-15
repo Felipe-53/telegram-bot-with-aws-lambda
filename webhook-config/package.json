@@ -1,0 +1,22 @@
+{
+  "name": "telegram-poesieas-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "set-webhook": "ts-node-dev ./index.ts setWebhook",
+    "webhook-info": "ts-node-dev ./index.ts getWebhookInfo"
+  },
+  "keywords": [],
+  "author": "Felipe53",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.11.12",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.5.3"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "dotenv": "^10.0.0"
+  }
+}
