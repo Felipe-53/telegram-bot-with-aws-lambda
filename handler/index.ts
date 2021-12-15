@@ -6,12 +6,32 @@ import {
 
 const botToken = process.env?.TOKEN
 if (!botToken) {
-  throw Error('Could not access environment variables')
+  throw Error('Could not access `TOKEN` environment variable')
 }
 
 const handler: APIGatewayProxyHandler = async (event, context) => {
-  assert(event.body, 'Empty request body')
+  // Handling Authentication
+  try {
+    assert(event.queryStringParameters?.token)
+  } catch {
+    return buildResponse({
+      statusCode: 401,
+      message: 'Unauthorized'
+    })
+  }
+  const queryStringToken = event.queryStringParameters.token
 
+  try {
+    assert(queryStringToken === botToken)
+  } catch {
+      return buildResponse({
+        statusCode: 403,
+        message: 'Forbidden'
+      })
+  }
+
+
+  assert(event.body, 'Empty request body')
   const body = JSON.parse(event.body)
 
   // Take a look at the Telegram Bot Api to know more!
@@ -29,10 +49,10 @@ const handler: APIGatewayProxyHandler = async (event, context) => {
     console.warn('Unsuccessful request', 'Reponse:', '\n', responseData)
   }
   
-  return {
+  return buildResponse({
     statusCode: 200,
-    body: 'ok'
-  }
+    message: 'ok'
+  })
 }
 
 async function sendMessageTo(message: string, chat_id: number) {
@@ -47,6 +67,26 @@ async function sendMessageTo(message: string, chat_id: number) {
 
   // the response payload
   return response.data
+}
+
+interface BuildResponseParams {
+  statusCode: number,
+  message: string
+}
+
+function buildResponse({
+  statusCode,
+  message
+}: BuildResponseParams) {
+  return {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    statusCode,
+    body: JSON.stringify({
+      msg: message
+    })
+  }
 }
 
 export { handler }
