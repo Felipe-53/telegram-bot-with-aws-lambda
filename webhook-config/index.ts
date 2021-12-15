@@ -12,7 +12,7 @@ async function setWebhook() {
     url: buildTelegramUrlEndpoint('setWebhook'),
     method: 'POST',
     data: {
-      url: `${getWebhookUrl()}/?token=${getToken()}`
+      url: `${getWebhookUrl()}?token=${getToken()}`
     }
   })
 
